@@ -2,7 +2,9 @@
 
 package lesson3.task1
 
+import java.math.BigInteger
 import kotlin.math.sqrt
+import kotlin.math.truncate
 
 /**
  * Пример
@@ -67,7 +69,13 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var i = 1.0
+    while (n / Math.pow(10.0, i) >= 1) {
+        i++
+    }
+    return i.toInt()
+}
 
 /**
  * Простая
@@ -75,7 +83,30 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(number: Int): Int {
+    var n = 1
+    var n_1 = 1
+    for (i in 3..number) {
+        val v = n
+        n += n_1
+        n_1 = v
+    }
+    return n
+}
+
+fun fib(n: Int, type: CalcType): Int = when (type) {
+    CalcType.CYCLE -> fib(n)
+    CalcType.RECURCE -> when {
+        n < 3 -> 1
+        else -> fib(n - 1) + fib(n - 2)
+    }
+
+}
+
+enum class CalcType {
+    CYCLE,
+    RECURCE
+}
 
 /**
  * Простая
@@ -83,21 +114,41 @@ fun fib(n: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var lcm = Math.max(m, n)
+    val step = Math.max(m, n)
+    while (!(lcm % m == 0 && lcm % n == 0)) {
+        lcm += step
+    }
+    return lcm
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var divider = 2
+    while (n % divider != 0) {
+        divider++
+    }
+    return divider
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var divider = n / 2
+    while (n % divider != 0) {
+        divider--
+    }
+    return divider
+
+}
 
 /**
  * Простая
@@ -106,7 +157,14 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    for (i in 2..Math.min(m, n)) {
+        if (m % i == 0 && n % i == 0) {
+            return false
+        }
+    }
+    return true
+}
 
 /**
  * Простая
@@ -115,7 +173,14 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (i in m..n) {
+        if (Math.sqrt(i.toDouble()) - Math.round(Math.sqrt(i.toDouble())) == 0.0) {
+            return true
+        }
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -133,7 +198,15 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var step = 0
+    var next = x
+    while (next != 1) {
+        next = if (next % 2 == 0) next / 2 else 3 * next + 1
+        step++
+    }
+    return step
+}
 
 /**
  * Средняя
@@ -144,7 +217,19 @@ fun collatzSteps(x: Int): Int = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var n = 1
+    var x1 = x
+    if (x > 2 * Math.PI)
+        x1 = x % (2 * Math.PI)
+
+    var result = 0.0
+    while (Math.pow(x1, n.toDouble()) / factorial(n) > eps) {
+        result += (Math.pow(-1.0, (n - 1) / 2.0) * Math.pow(x1, n.toDouble()) / factorial(n))
+        n += 2
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -155,7 +240,57 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var n = 2
+    var x1 = x
+    if (x > 2 * Math.PI)
+        x1 = x % (2 * Math.PI)
+
+    var result = 1.0
+    while (Math.pow(x1, n.toDouble()) / factorial(n) > eps) {
+        result += (Math.pow(-1.0, n / 2.0) * Math.pow(x1, n.toDouble()) / factorial(n))
+        n += 2
+    }
+    return result
+}
+
+/**
+ * Подсчет количетва цифр в числе
+ */
+
+fun numberCount(n: Int): Int {
+    var numberCount = 0
+    while (n / Math.pow(10.0, numberCount.toDouble()) >= 1) {
+        numberCount++
+    }
+    return numberCount
+}
+
+fun numberCount(n: Long): Int {
+    var numberCount = 0
+    while (n / Math.pow(10.0, numberCount.toDouble()) >= 1) {
+        numberCount++
+    }
+    return numberCount
+}
+
+fun numberCount(n: BigInteger): Int {
+    var numberCount = 0
+    while (n.divide((BigInteger.TEN.pow((numberCount)))).compareTo(BigInteger.ONE) >= 0) {
+        numberCount++
+    }
+    return numberCount
+}
+
+/**
+ * Поиск цифры в числе по порядковому номеру справа налево
+ */
+fun getNumber(n: Int, number: Int): Int = (n / Math.pow(10.0, (number - 1).toDouble()) % 10).toInt()
+
+fun getNumber(n: Long, number: Int): Int = (n / Math.pow(10.0, (number - 1).toDouble()) % 10).toInt()
+
+fun getNumber(n: BigInteger, number: Int): Int =
+    (n.divide((BigInteger.TEN.pow((number - 1)))).mod(BigInteger.TEN)).toInt()
 
 /**
  * Средняя
@@ -164,7 +299,14 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var result = 0
+    val numberCount = numberCount(n)
+    for (i in 0..numberCount - 1) {
+        result += (getNumber(n, numberCount - i) * Math.pow(10.0, (i).toDouble())).toInt()
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -175,7 +317,15 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    val numberCount = numberCount(n)
+    var result = true
+    for (i in 1..numberCount / 2) {
+        if (getNumber(n, numberCount - i + 1) != getNumber(n, i))
+            result = false
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -185,7 +335,16 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val numberCount = numberCount(n)
+    val firstNumber = getNumber(n, numberCount)
+    for (i in 1..numberCount - 1) {
+        if (getNumber(n, i) != firstNumber) {
+            return true
+        }
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -196,7 +355,17 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var currentNumber: BigInteger = BigInteger.ONE
+    var next = 2.0
+    while (numberCount(currentNumber) < n) {
+        val pow = Math.pow(next, 2.0)
+        currentNumber =
+            currentNumber.multiply(BigInteger.TEN.pow(numberCount(pow.toInt()))).add(pow.toBigDecimal().toBigInteger())
+        next++
+    }
+    return getNumber(currentNumber, numberCount(currentNumber) - n + 1)
+}
 
 /**
  * Сложная
@@ -207,4 +376,14 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var currentNumber: BigInteger = BigInteger.ONE
+    var next = 2
+    while (numberCount(currentNumber) < n) {
+        val pow = fib(next)
+        currentNumber =
+            currentNumber.multiply(BigInteger.TEN.pow(numberCount(pow))).add(pow.toBigDecimal().toBigInteger())
+        next++
+    }
+    return getNumber(currentNumber, numberCount(currentNumber) - n + 1)
+}

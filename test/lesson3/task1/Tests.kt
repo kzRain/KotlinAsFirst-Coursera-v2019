@@ -215,6 +215,14 @@ class Tests {
     }
 
     @Test
+    fun getNumber() {
+        assertEquals(5, getNumber(127365,1))
+        assertEquals(1, getNumber(127365,6))
+        assertEquals(7, getNumber(127365,4))
+        assertEquals(5, getNumber(5,1))
+    }
+
+    @Test
     @Tag("Normal")
     fun hasDifferentDigits() {
         assertTrue(hasDifferentDigits(323))
