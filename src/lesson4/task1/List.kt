@@ -245,4 +245,57 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val edinSimple = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val edinThousand = listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val teens = listOf(
+        "десять", "одиннадцать","двенадцать", "тринадцать", "четырнадцать", "пятьнадцать",
+        "шестьнадцать", "семьнадцать", "восемьнадцать","девятнадцать"
+    )
+    val decim = listOf(
+        "", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят",
+        "семьдесят", "восемьдесят", "девяносто"
+    )
+    val hundreds =
+        listOf("", "сто", "двести", "триста", "четыресто", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+    val thousand = listOf("тысяч", "тысяча", "тысячи", "тысячи", "тысячи", "тысяч", "тысяч", "тысяч", "тысяч", "тысяч")
+    val million = listOf(
+        "миллионов", "миллион", "миллиона", "миллиона", "миллиона", "миллионов", "миллионов",
+        "миллионов", "миллионов", "миллионов"
+    )
+    val milliard = listOf(
+        "миллиардов", "миллиард", "миллиарда", "миллиарда", "миллиарда", "миллиардов",
+        "миллиардов", "миллиардов", "миллиардов", "миллиардов"
+    )
+    val trillon = listOf(
+        "триллионов", "триллион", "триллиона", "триллиона", "триллиона", "триллионов",
+        "триллионов", "триллионов",  "триллионов", "триллионов"
+    )
+    val periods = listOf(thousand, million, milliard, trillon)
+    var result = ""
+    var tempNumber = if (n < 0) -n else n
+    var razryad = -1
+    while (tempNumber > 0) {
+        val localNum = tempNumber % 1000
+        val sotni: Int = localNum / 100
+        val desyatki: Int = localNum / 10 % 10
+        val edinicy = localNum % 10
+        //Добавляем название разрядов
+        result = (if (razryad >= 0 && localNum > 0)
+            (if (desyatki == 1) " " + periods[razryad][0] else " " + periods[razryad][edinicy]) else "") + result
+
+        //Прописью десятки и единицы
+        result = (if (desyatki > 0)
+            (if (desyatki == 1) " " + teens[edinicy] else
+                (if (razryad == 0) " " + decim[desyatki] + " " + edinThousand[edinicy]
+                else " " + decim[desyatki] + " " + edinSimple[edinicy]))
+        else
+            (if (edinicy > 0)
+                (if (razryad == 0) " " + edinThousand[edinicy] else " " + edinSimple[edinicy]) else "")) + result
+        //Прописью сотни
+        result = (if (sotni > 0) " " + hundreds[sotni] else "") + result
+        tempNumber /= 1000
+        razryad++
+    }
+    return result.trim()
+}
